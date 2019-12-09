@@ -24,9 +24,8 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
-//        $request->session()->reflash();
         return view('posts.show', ['post' => BlogPost::findOrFail($id)]);
     }
 
@@ -38,15 +37,27 @@ class PostController extends Controller
     public function store(StorePost $request)
     {
         $validateData = $request->validated();
-
-        $blogPost = new BlogPost();
-        $blogPost->title = $request->input('title');
-        $blogPost->content = $request->input('content');
-        $blogPost->save();
-
+        $blogPost = BlogPost::create($validateData);
         $request->session()->flash('status', 'Blog post was created!');
 
         return redirect()->route('posts.show', ['post' => $blogPost->id]);
+    }
+
+    public function edit($id)
+    {
+        $post = BlogPost::findOrFail($id);
+        return view('posts.edit', ['post' => $post]);
+    }
+
+    public function update(StorePost $request, $id)
+    {
+        $post = BlogPost::findOrFail($id);
+        $validateData = $request->validated();
+
+        $post->fill($validateData);
+        $post->save();
+        $request->session()->flash('status', 'Blog post was updated!');
+        return redirect()->route('posts.show', ['post' => $post->id]);
     }
 
 
