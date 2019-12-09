@@ -56,7 +56,7 @@ class PostController extends Controller
 
         $post->fill($validateData);
         $post->save();
-        $request->session()->flash('status', 'Blog post was deleted!');
+        $request->session()->flash('status', 'Blog post was updated!');
         return redirect()->route('posts.show', ['post' => $post->id]);
     }
 
